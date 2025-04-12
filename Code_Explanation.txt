@@ -1,0 +1,37 @@
+
+
+QR_Code.py:
+
+This Python script uses OpenCV and pyzbar to capture a video stream from a Dahua camera via RTSP (Real Time streaming Protocol)
+to detect and decode QR codes in real-time, display the decoded data, and draw a green rectangle around detected QR codes. 
+The video feed is resized and shown in a window, with the option to exit by pressing 'q'.
+
+
+The Main question is How we detect and decode the QR code ? 
+
+the most important line in the code is : 
+
+data = obj.data.decode("utf-8")
+
+obj : is a QR code object detected by pyzbar's decode function after decoding the frame (the capture)
+
+.data : data attribute contains the raw content of the QR code, stored as a byte string
+
+.decode("utf-8"): This method converts the byte string into a regular string using the UTF-8 encoding, which is a standard way to represent text
+
+
+
+Object_Dect.py :
+
+This Python script uses OpenCV to perform real-time object detection on video streams (from an RTSP camera feed)
+using the SSD MobileNet V3 model trained on the COCO dataset. 
+It detects objects, draws bounding boxes with labels, and displays scores.
+
+What SSD MobileNet V3 Does:
+
+SSD (Single Shot MultiBox Detector): Looks at an image once and quickly finds objects,
+ guessing what they are (like "cat") and where they are (drawing boxes around them).
+
+MobileNet V3: A small, fast system that helps the model work well without needing a lot of computer complexity while maintaining accuracy,
+
+COCO Dataset: The model is trained on the COCO dataset, a big collection of images (COCO) to recognize 80 everyday things, like "dog" or "bike."
