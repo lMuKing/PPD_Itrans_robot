@@ -10,8 +10,8 @@ back_right_motor = Motor(forward=24, backward=25)
 leftSensor1 = DigitalInputDevice(26)
 rightSensor3 = DigitalInputDevice(21)
 
-frontSensor = DistanceSensor(13, 19)
-backSensor = DistanceSensor(16, 20)
+frontSensor = DistanceSensor(echo=19, trigger=13)
+backSensor = DistanceSensor(echo=20, trigger=16)
 
 #Motor
 def stop():
