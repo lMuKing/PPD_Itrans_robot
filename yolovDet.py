@@ -2,24 +2,23 @@ import cv2
 import numpy as np
 import time
 
-classNames = ["person"]
-
 # Load YOLOv3 model
 configPath = "/home/robot2325/Desktop/Object_Detection_Files/yolov3.cfg"
 weightsPath = "/home/robot2325/Desktop/Object_Detection_Files/yolov3.weights"
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 
-# Set backend for potential optimization
+# Optimize for CPU
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)  # Use DNN_TARGET_CUDA for GPU
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)  # Switch to DNN_TARGET_CUDA for GPU
 
-# Cache layer names
+# Cache output layers
 layer_names = net.getLayerNames()
 output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
-def getObjects(img, thres=0.45, nms=0.2, draw=True, objects=None):
+def detect_persons(img, conf_thres=0.5, nms_thres=0.4):
     """
-    Optimized object detection using YOLOv3, with optional class filtering.
+    Optimized person detection using YOLOv3.
+    Returns image with bounding boxes and list of person detections.
     """
     t_start = time.time()
     height, width = img.shape[:2]
@@ -33,62 +32,44 @@ def getObjects(img, thres=0.45, nms=0.2, draw=True, objects=None):
 
     boxes = []
     confidences = []
-    class_ids = []
 
+    # Process detections, only for person
     for output in outputs:
         for detection in output:
-            scores = detection[5:]
-            class_id = np.argmax(scores)
-            confidence = scores[class_id]
-
-            if confidence > thres:
+            confidence = detection[5]  # Person class (index 5, class_id 0)
+            if confidence > conf_thres:
                 center_x = int(detection[0] * width)
                 center_y = int(detection[1] * height)
                 w = int(detection[2] * width)
                 h = int(detection[3] * height)
-                x = int(center_x - w / 2)
-                y = int(center_y - h / 2)
-
-                x = max(0, min(x, width - 1))
-                y = max(0, min(y, height - 1))
+                x = max(0, min(int(center_x - w / 2), width - 1))
+                y = max(0, min(int(center_y - h / 2), height - 1))
                 w = min(w, width - x)
                 h = min(h, height - y)
 
                 boxes.append([x, y, w, h])
                 confidences.append(float(confidence))
-                class_ids.append(class_id)
 
-    objectInfo = []
+    # Apply NMS
+    person_detections = []
     if boxes:
-        indices = cv2.dnn.NMSBoxes(boxes, confidences, thres, nms)
-
-        target_objects = set(objects if objects else classNames)
-
+        indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_thres, nms_thres)
         for i in indices:
             i = i if isinstance(i, np.int32) else i[0]
             box = boxes[i]
-            class_id = class_ids[i]
-            class_name = classNames[class_id]
+            person_detections.append(box)
+            # Draw bounding box and confidence
+            cv2.rectangle(img, (box[0], box[1], box[2], box[3]), color=(0, 255, 0), thickness=2)
+            label = f"PERSON {confidences[i]*100:.1f}%"
+            cv2.putText(img, label, (box[0] + 5, box[1] + 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
-            if class_name in target_objects:
-                objectInfo.append([box, class_name])
-                if draw:
-                    cv2.rectangle(img, (box[0], box[1], box[2], box[3]), color=(0, 255, 0), thickness=2)
-                    label = f"{class_name.upper()} {confidences[i]*100:.2f}%"
-                    cv2.putText(
-                        img,
-                        label,
-                        (box[0] + 10, box[1] + 30),
-                        cv2.FONT_HERSHEY_COMPLEX,
-                        0.6,
-                        (0, 255, 0),
-                        2,
-                    )
+    
 
-    return img, objectInfo
+    return img, person_detections
 
 if __name__ == "__main__":
-    rtsp_url = "rtsp://admin:admin@192.168.1.9:1935/"
+    rtsp_url = "rtsp://admin:admin@192.168.1.23:1935/"
     cap = cv2.VideoCapture(rtsp_url)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -100,11 +81,10 @@ if __name__ == "__main__":
             break
 
         img = cv2.resize(img, (640, 480))
-        # Detect only humans
-        result, objectInfo = getObjects(img, thres=0.45, nms=0.2, objects=["person"])
-        print(objectInfo)
+        result, detections = detect_persons(img)
+        print(f"Persons detected: {len(detections)}")
 
-        cv2.imshow("Output", result)
+        cv2.imshow("Person Detection", result)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
