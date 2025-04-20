@@ -1,6 +1,8 @@
 import keyboard
 from gpiozero import Motor DigitalInputDevice DistanceSensor
 from time import sleep
+import csv
+from datetime import datetime
 
 front_left_motor = Motor(forward=12, backward=17)
 front_right_motor = Motor(forward=18, backward=27)
@@ -122,6 +124,19 @@ def pivot_left_backward(speed=1):
     back_left_motor.backward(speed)
     back_right_motor.stop() 
 
+
+
+def log_distances(front, back, to_file=False):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_line = f"{timestamp} | Front: {front:.1f} cm | Back: {back:.1f} cm"
+    print(log_line)
+    
+    if to_file:
+        with open("distance_log.csv", "a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([timestamp, front, back])
+
+
 def auto_drive():
     print("Autonomous mode started. Press CTRL+C to stop.")
     try:
@@ -130,7 +145,8 @@ def auto_drive():
             back = backSensor.distance * 100    # in cm
 
             print(f"Front: {front:.1f} cm | Back: {back:.1f} cm")
-
+            log_distances(front, back, to_file=True)
+            
             if front > 40:
                 move_forward()
             else:
@@ -266,6 +282,10 @@ def control_robot():
             break
         else:
             stop()
+
+        front = frontSensor.distance * 100
+        back = backSensor.distance * 100
+        log_distances(front, back)
 
         sleep(0.05)
 
