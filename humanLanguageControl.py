@@ -3,6 +3,8 @@ from gpiozero import Motor DigitalInputDevice DistanceSensor
 from time import sleep
 import csv
 from datetime import datetime
+import speech_recognition as sr
+
 
 front_left_motor = Motor(forward=12, backward=17)
 front_right_motor = Motor(forward=18, backward=27)
@@ -236,7 +238,7 @@ def control_robot():
         Space - Stop
         ESC - Exit
     """)
-    
+
     while True:
         if keyboard.is_pressed('z'):
             move_forward()
@@ -325,6 +327,7 @@ def generate(command):
             ],
         ),
     ]
+
     generate_content_config = types.GenerateContentConfig(
         response_mime_type="application/json",
     )
@@ -348,7 +351,7 @@ def generate(command):
 # Function to execute actions based on user input(parsed to JSON format
 def execute_action(action, parameter):
     actions = {
-        "move_forward": move_forward, # move_forward, move_backward, move_left, move_right, rotate_counterclockwise, rotate_clockwise, move_forward_left, move_forward_right, move_backward_left, pivot_front_right, pivot_front_left, pivot_back_right, pivot_back_left, pivot_right_forward, pivot_right_backward, pivot_left_forward, pivot_left_backward, stop
+        "move_forward": move_forward,
         "move_backward": move_backward,
         "move_left": move_left,
         "move_right": move_right,
@@ -380,6 +383,29 @@ def execute_action(action, parameter):
     else:
         print("Unknown or invalid action")
 
+def record_voice()
+    # Initialize the recognizer
+    recognizer = sr.Recognizer()
+
+    # Use the microphone as the audio source
+    with sr.Microphone() as source:
+        print("🎤 Say something:")
+        audio = recognizer.listen(source)
+
+    try:
+        # Recognize speech using Google Web Speech API
+        text = recognizer.recognize_google(audio, language="en-US")
+        print("You said:", text)
+
+    except sr.UnknownValueError:
+        print("Sorry, I could not understand your speech.")
+        text = ""
+    except sr.RequestError as e:
+        print(f"Could not request results from Google Speech Recognition service; {e}")
+        text = ""
+
+    return text
+
 if __name__ == "__main__":
     mode = input("'a' for auto drive model,\n"
                  "'m' for manual drive mode,\n"
@@ -389,8 +415,8 @@ if __name__ == "__main__":
         auto_drive()
     elif mode == "p":
         while True:
-        command = input("Enter your command: ").lower().strip()  # Or use get_voice_command()
-         if command:
+        command = record_voice()
+         if command != "":
             action, parameter = generate(command)
             execute_action(action, parameter)
     else:
