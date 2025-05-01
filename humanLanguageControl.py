@@ -292,7 +292,7 @@ def control_robot():
 # Function to generate text using gemini api
 def generate(command):
     client = genai.Client(
-        api_key=os.environ.get("AIzaSyAl4xICO5Z4eWpB9OLPB3MGw_YcWT6agis"),
+        api_key=os.environ.get("GEMINI_API_KEY"),
     )
 
     model = "gemini-2.0-flash"
