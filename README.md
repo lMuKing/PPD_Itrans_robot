@@ -1,40 +1,46 @@
-# PPD_Itrans_robot 
+# PPD_Itrans_robot
 
-This project allows you to detect objects and QR codes in real-time using a Dahua IP camera and Python.
-There are two main scripts: one for object detection and another for QR code scanning.
-It uses a pre-trained MobileNet SSD model for object detection.
-Results are shown in a display window, with object names or QR code content printed in the terminal.
+![Project Banner](.)
 
-Required Python Version:
-Python 3
+[![Python Version](https://img.shields.io/badge/python-3.x-blue.svg)](https://www.python.org/downloads/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)
 
-Download Required Model Files:
+
+## 📋 Overview
+This project delivers real-time object detection and QR code scanning capabilities using a Dahua IP camera and Python. With powerful computer vision integration, the system can identify various objects and decode QR codes instantly from live video feeds.
+
+## ✨ Key Features
+* **Real-time object detection** using pre-trained MobileNet SSD model
+* **QR code scanning and decoding** with immediate content extraction
+* **Seamless integration** with Dahua IP cameras via RTSP stream
+* **Interactive visual display** with bounding boxes and labels
+* **Dual functionality** through specialized scripts for different detection needs
+* **Terminal output** of detected objects or QR code content
+* **Lightweight implementation** for efficient performance
+
+## 📸 Usage Examples
+
+![Object Detection Example](https://via.placeholder.com/400x300?text=Object+Detection+Demo)
+![QR Code Scanning Example](https://via.placeholder.com/400x300?text=QR+Code+Scanning+Demo)
+
+## 🔧 Requirements
+
+### 🐍 Python Version
+* Python 3.6 
+
+### 📦 Required Model Files
 You must download and extract the following zip file into your project folder:
-https://core-electronics.com.au/media/kbase/491/Object_Detection_Files.zip
+[Object Detection Files](https://core-electronics.com.au/media/kbase/491/Object_Detection_Files.zip)
 
-The zip file contains:
+The zip file contains these essential components:
+* `coco.names`: Comprehensive list of 80+ object class names (person, car, chair, etc.)
+* `ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt`: Model architecture configuration file
+* `frozen_inference_graph.pb`: Pre-trained model weights optimized for detection tasks
 
-coco.names: a list of object class names (e.g. person, car, etc.)
-
-ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt: the model configuration file
-
-frozen_inference_graph.pb: the pre-trained model weights
-
-Install Required Python Libraries:
-
-pip install opencv-python
-This installs OpenCV for image and video processing.
-
-pip install numpy
-This installs NumPy for working with arrays and image data.
-
-pip install pyzbar
-This installs the pyzbar library used in QR_code.py for QR code detection.
-
-Project Files:
-
-Object_Dect.py
-This script loads the object detection model and connects to the Dahua RTSP stream to detect and label objects in real time.
-
-QR_code.py
-This script connects to the same RTSP stream and detects QR codes using pyzbar. It draws boxes around detected QR codes and prints their content.
+### 📚 Required Python Libraries
+```bash
+# Core dependencies
+pip install opencv-python    # Computer vision library for image processing
+pip install numpy           # Numerical computing for efficient array operations
+pip install pyzbar          # QR code and barcode detection and decoding
+```
