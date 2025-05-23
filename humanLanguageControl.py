@@ -1,5 +1,5 @@
 import keyboard
-from gpiozero import Motor DigitalInputDevice DistanceSensor
+from gpiozero import Motor ,DigitalInputDevice ,DistanceSensor
 from time import sleep
 import csv
 from datetime import datetime
@@ -383,7 +383,7 @@ def execute_action(action, parameter):
     else:
         print("Unknown or invalid action")
 
-def record_voice()
+def record_voice():
     # Initialize the recognizer
     recognizer = sr.Recognizer()
 
@@ -415,10 +415,10 @@ if __name__ == "__main__":
         auto_drive()
     elif mode == "p":
         while True:
-        command = record_voice()
-         if command != "":
-            action, parameter = generate(command)
-            execute_action(action, parameter)
+            command = input("Enter a command: ").strip()
+            if command != "":
+                action, parameter = generate(command)
+                execute_action(action, parameter)
     else:
         try:
             control_robot()
