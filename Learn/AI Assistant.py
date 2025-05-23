@@ -77,7 +77,7 @@ def custom_override(cmd):
         return "Khaled Benchikha, assas houssem , amireche mouad , aimar yasser , abbaz ishak , belhouchi mahi eddine , zefizef ouassim zaki."
 
     if any(kw in cmd for kw in ["introduce yourself", "show yourself", "are you a robot"]):
-        return "I am a smart robot."
+        return "I am 'kwhimy-x' a smart robot with multiple features. My developers will show you my abilities."
 
     return None  # no match
 
