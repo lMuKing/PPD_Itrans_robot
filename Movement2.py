@@ -1,5 +1,5 @@
 import keyboard
-from gpiozero import Motor DigitalInputDevice DistanceSensor
+from gpiozero import Motor  DistanceSensor
 from time import sleep
 import csv
 from datetime import datetime
@@ -9,8 +9,6 @@ front_right_motor = Motor(forward=18, backward=27)
 back_left_motor = Motor(forward=22, backward=23)
 back_right_motor = Motor(forward=24, backward=25)
 
-leftSensor1 = DigitalInputDevice(26)
-rightSensor3 = DigitalInputDevice(21)
 
 frontSensor = DistanceSensor(echo=19, trigger=13)
 backSensor = DistanceSensor(echo=20, trigger=16)
