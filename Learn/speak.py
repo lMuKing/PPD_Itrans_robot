@@ -74,7 +74,7 @@ def custom_override(cmd):
 
     # Fuzzy matching
     if any(kw in cmd for kw in ["who built you", "who created you", "who programmed you"]):
-        return "Khaled Benchikha, my sir."
+        return "Khaled Benchikha, assas houssem , amireche mouad , aimar yasser , abbaz ishak , belhouchi mahi eddine , zefizef ouassim zaki."
 
     if any(kw in cmd for kw in ["introduce yourself", "show yourself", "are you a robot"]):
         return "I am a smart robot."
